@@ -1,0 +1,53 @@
+﻿@using BankExtract.UI.Web.Models
+@using System.Globalization
+@{
+    ViewBag.Title = "Bank Extract";
+}
+@model Extract
+<div>
+    @using (Html.BeginForm("Upload", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="card">
+            <div class="card-header">
+                Bank Extract
+            </div>
+            <div class="card-body">
+                <div class="mb-3 row g-3">
+                    <div class="col-sm-11">
+                        <input class="form-control" type="file" multiple="multiple" name="Files" accept=".ofx" />
+                        @Html.ValidationMessageFor(x => x.Files, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-1">
+                        <input type="submit" value="OK" class="btn btn-primary" />
+                    </div>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th scope="col">Banco</th>
+                                <th scope="col">Tipo</th>
+                                <th scope="col">Data de lançamento</th>
+                                <th scope="col">Valor</th>
+                                <th scope="col">Descrição da cobrança</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Movements != null)
+                            {
+                                foreach (var item in Model.Movements)
+                                {
+                                    <tr>
+                                        <td>@item.Bank.ToString()</td>
+                                        <td><strong><i class="bi-arrow-@(item.Type == "DEBIT" ? "down text-danger" : "up text-success")"></i></strong>@item.Type</td>
+                                        <td>@item.DateMovement</td>
+                                        <td>@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", item.Value)</td>
+                                        <td>@item.Description</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
